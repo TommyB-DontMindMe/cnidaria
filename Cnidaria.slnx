@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Cnidaria.vcxproj" Id="09265688-ed56-4a4e-85d7-c763062dd722" />
+</Solution>
