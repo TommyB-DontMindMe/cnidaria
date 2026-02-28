@@ -78,7 +78,7 @@ void Cnidaria::NeuralNetwork::BackPropagate(const std::vector<double>& Inputs, c
 	}
 }
 
-void Cnidaria::NeuralNetwork::Train(const std::vector<std::vector<double>>& Inputs, const std::vector<std::vector<double>>& Targets, int Epochs, double LearningRate)
+void Cnidaria::NeuralNetwork::Train(const std::vector<std::vector<double>>& Inputs, const std::vector<std::vector<double>>& Targets, int Epochs, double LearningRate, void (*LogFunction)(int, double), int LogFrequency)
 {
 	for (int epoch = 0; epoch < Epochs; ++epoch)
 	{
@@ -91,8 +91,8 @@ void Cnidaria::NeuralNetwork::Train(const std::vector<std::vector<double>>& Inpu
 
 			totalError += CalculateMeanSquareError(Targets[i], Layers.back().Outputs);
 		}
-		if (epoch % 1000 == 0)
-			std::cout << "Epoch " << epoch << " - Avg Error: " << (totalError / Inputs.size()) << std::endl;
+		if (epoch % LogFrequency == 0 && LogFunction)
+			LogFunction(epoch, totalError);
 	}
 }
 

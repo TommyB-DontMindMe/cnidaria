@@ -20,7 +20,7 @@ namespace Cnidaria
 
 		void BackPropagate(const std::vector<double>& Inputs, const std::vector<double>& Targets, double LearningRate);
 
-		void Train(const std::vector<std::vector<double>>& Inputs, const std::vector<std::vector<double>>& Targets, int Epochs, double LearningRate);
+		void Train(const std::vector<std::vector<double>>& Inputs, const std::vector<std::vector<double>>& Targets, int Epochs, double LearningRate, void (*LogFunction)(int, double) = nullptr, int LogFrequency = 1000);
 
 		double CalculateMeanSquareError(const std::vector<double>& Targets, const std::vector<double>& Actual);
 	};
