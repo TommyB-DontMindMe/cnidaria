@@ -25,6 +25,7 @@ namespace Cnidaria
 		std::vector<double> Weights;
 
 		Layer(int NeuronCount, int InputCount, ACTIVATION_FUNCTION ActivationType, std::mt19937& RandomnessGenerator);
+		Layer(ACTIVATION_FUNCTION ActivationType, const std::vector<double>& Biases, const std::vector<double>& Weights);
 
 		void FeedForward(const std::vector<double>& Inputs);
 	};

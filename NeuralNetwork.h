@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Layer.h"
+#include <string>
 
 class Tensor;
 
@@ -15,6 +16,7 @@ namespace Cnidaria
 		// ActivationFunction sets the activation function for each layer
 		// The first ActivationFunction is not used as it corresponds to the Input layer
 		NeuralNetwork(const std::vector<int>& Topology, const std::vector<ACTIVATION_FUNCTION>& ActivationFunction);
+		NeuralNetwork(std::string Filename);
 
 		std::vector<double> Execute(const std::vector<double>& Inputs);
 
@@ -23,6 +25,8 @@ namespace Cnidaria
 		void Train(const std::vector<std::vector<double>>& Inputs, const std::vector<std::vector<double>>& Targets, int Epochs, double LearningRate, void (*LogFunction)(int, double) = nullptr, int LogFrequency = 1000);
 
 		double CalculateMeanSquareError(const std::vector<double>& Targets, const std::vector<double>& Actual);
+
+		void SaveToFile(std::string Filename);
 	};
 
 	double NeuronActivation(const ACTIVATION_FUNCTION& FunctionType, double Input);

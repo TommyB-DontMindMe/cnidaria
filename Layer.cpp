@@ -23,6 +23,16 @@ Layer::Layer(int NeuronCount, int InputCount, ACTIVATION_FUNCTION ActivationType
 	}
 }
 
+Cnidaria::Layer::Layer(ACTIVATION_FUNCTION ActivationType, const std::vector<double>& Biases, const std::vector<double>& Weights) : ActivationType(ActivationType), Biases(Biases), Weights(Weights)
+{
+	NumNeurons = Biases.size();
+	NumInputsPerNeuron = Weights.size() / NumNeurons;
+
+	Outputs.resize(NumNeurons, 0.0);
+	Gradients.resize(NumNeurons, 0.0);
+	NetInputs.resize(NumNeurons, 0.0);
+}
+
 void Layer::FeedForward(const std::vector<double>& Inputs)
 {
 	for (int n = 0; n < NumNeurons; n++)

@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "NeuralNetwork.h"
+#include <iomanip>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <cmath>
 
 using namespace Cnidaria;
@@ -14,6 +17,49 @@ Cnidaria::NeuralNetwork::NeuralNetwork(const std::vector<int>& Topology, const s
 		int numNeurons = Topology[i];
 		int inputsPerNeuron = Topology[i - 1];
 		Layers.emplace_back(numNeurons, inputsPerNeuron, ActivationFunction[i], randomizer);
+	}
+}
+
+Cnidaria::NeuralNetwork::NeuralNetwork(std::string Filename)
+{
+	std::ifstream input;
+	input.open(Filename);
+	if (input.is_open())
+	{
+		std::string line;
+		while (std::getline(input, line))
+		{
+			if (line.empty()) continue;
+
+			ACTIVATION_FUNCTION inputActivation;
+			std::vector<double> inputBias;
+			std::vector<double> inputWeights;
+
+			std::stringstream ss(line);
+			char marker;
+			int activation;
+			double bias;
+
+			ss >> marker >> activation >> marker >> bias;
+			inputActivation = static_cast<ACTIVATION_FUNCTION>(activation);
+			inputBias.push_back(bias);
+
+			ss >> marker;
+			std::string weightString;
+			while (std::getline(ss, weightString, ','))
+			{
+				try {
+					double weight = std::stod(weightString);
+					inputWeights.push_back(weight);
+				}
+				catch (...) {
+					continue;
+				}
+			}
+			Layers.emplace_back(inputActivation, inputBias, inputWeights);
+		}
+
+		input.close();
 	}
 }
 
@@ -105,6 +151,35 @@ double Cnidaria::NeuralNetwork::CalculateMeanSquareError(const std::vector<doubl
 		error += difference * difference;
 	}
 	return error / Targets.size();
+}
+
+void Cnidaria::NeuralNetwork::SaveToFile(std::string Filename)
+{
+	std::ofstream output;
+
+	output.open(Filename);
+	if (output.is_open())
+	{
+		output << std::setprecision(15);
+
+		// Should probably store the size of each layer to help in loading
+
+		for (const Layer& layer : Layers)
+		{
+			for (size_t i = 0; i < layer.NumNeurons; ++i)
+			{
+				output << "a" << static_cast<int>(layer.ActivationType) << "";
+				output << "b" << layer.Biases[i] << "w";
+				int weightOffset = i * layer.NumInputsPerNeuron;
+				for (size_t j = 0; j < layer.NumInputsPerNeuron; j++)
+				{
+					output << layer.Weights[weightOffset + j] << (j < layer.NumInputsPerNeuron - 1) ? ", " : "";
+				}
+				output << std::endl;
+			}
+		}
+		output.close();
+	}
 }
 
 double Cnidaria::NeuronActivation(const ACTIVATION_FUNCTION& FunctionType, double Input)
