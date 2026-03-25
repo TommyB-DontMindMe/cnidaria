@@ -3,6 +3,7 @@
 #include "Layer.h"
 #include <string>
 
+template <typename T>
 class Tensor;
 
 namespace Cnidaria

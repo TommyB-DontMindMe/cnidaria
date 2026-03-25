@@ -58,7 +58,7 @@ Cnidaria::NeuralNetwork::NeuralNetwork(std::string Filename)
 			}
 			Layers.emplace_back(inputActivation, inputBias, inputWeights);
 		}
-
+		
 		input.close();
 	}
 }
