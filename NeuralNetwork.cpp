@@ -63,6 +63,35 @@ Cnidaria::NeuralNetwork::NeuralNetwork(std::string Filename)
 	}
 }
 
+void Cnidaria::NeuralNetwork::SaveToFile(std::string Filename)
+{
+	std::ofstream output;
+
+	output.open(Filename);
+	if (output.is_open())
+	{
+		output << std::setprecision(15);
+
+		// Should probably store the size of each layer to help in loading
+
+		for (const Layer& layer : Layers)
+		{
+			for (size_t i = 0; i < layer.NumNeurons; ++i)
+			{
+				output << "a" << static_cast<int>(layer.ActivationType) << "";
+				output << "b" << layer.Biases[i] << "w";
+				int weightOffset = i * layer.NumInputsPerNeuron;
+				for (size_t j = 0; j < layer.NumInputsPerNeuron; j++)
+				{
+					output << layer.Weights[weightOffset + j] << (j < layer.NumInputsPerNeuron - 1 ? ", " : "");
+				}
+				output << std::endl;
+			}
+		}
+		output.close();
+	}
+}
+
 std::vector<double> Cnidaria::NeuralNetwork::Execute(const std::vector<double>& Inputs)
 {
 	std::vector<double> currentInputs = Inputs;
@@ -151,35 +180,6 @@ double Cnidaria::NeuralNetwork::CalculateMeanSquareError(const std::vector<doubl
 		error += difference * difference;
 	}
 	return error / Targets.size();
-}
-
-void Cnidaria::NeuralNetwork::SaveToFile(std::string Filename)
-{
-	std::ofstream output;
-
-	output.open(Filename);
-	if (output.is_open())
-	{
-		output << std::setprecision(15);
-
-		// Should probably store the size of each layer to help in loading
-
-		for (const Layer& layer : Layers)
-		{
-			for (size_t i = 0; i < layer.NumNeurons; ++i)
-			{
-				output << "a" << static_cast<int>(layer.ActivationType) << "";
-				output << "b" << layer.Biases[i] << "w";
-				int weightOffset = i * layer.NumInputsPerNeuron;
-				for (size_t j = 0; j < layer.NumInputsPerNeuron; j++)
-				{
-					output << layer.Weights[weightOffset + j] << (j < layer.NumInputsPerNeuron - 1) ? ", " : "";
-				}
-				output << std::endl;
-			}
-		}
-		output.close();
-	}
 }
 
 double Cnidaria::NeuronActivation(const ACTIVATION_FUNCTION& FunctionType, double Input)
